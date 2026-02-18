@@ -1,0 +1,85 @@
+name: CI-CD to IIS
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DEPLOY_PATH: C:\inetpub\wwwroot\mysite
+
+jobs:
+
+  # =====================================================
+  # 1️⃣ CI STAGE - Build + Version + Artifact
+  # =====================================================
+  build:
+    runs-on: self-hosted
+
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Generate version like 18022026001
+      - name: Generate Version
+        id: version
+        shell: powershell
+        run: |
+          $date = Get-Date -Format "ddMMyyyy"
+          $runNumber = "{0:D3}" -f $env:GITHUB_RUN_NUMBER
+          $version = "$date$runNumber"
+          Write-Host "Generated version: $version"
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+
+      # Upload repo as artifact (excluding .github)
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-${{ steps.version.outputs.version }}
+          path: |
+            - 'Test.html'
+            !.github/**
+          if-no-files-found: error
+
+
+  # =====================================================
+  # 2️⃣ CD STAGE - Manual Approval + Deploy
+  # =====================================================
+  deploy:
+    needs: build
+    runs-on: self-hosted
+
+    environment:
+      name: production
+      url: http://localhost/mysite
+
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: website-${{ needs.build.outputs.version }}
+          path: deploy
+
+      - name: Stop IIS
+        run: iisreset /stop
+
+      - name: Deploy to IIS (Safe Robocopy)
+        shell: powershell
+        run: |
+          robocopy deploy $env:DEPLOY_PATH /MIR /XD .github
+          if ($LASTEXITCODE -lt 8) {
+              Write-Host "Robocopy completed successfully."
+              exit 0
+          } else {
+              Write-Host "Robocopy failed with exit code $LASTEXITCODE"
+              exit $LASTEXITCODE
+          }
+
+      - name: Start IIS
+        run: iisreset /start
+
+      - name: Deployment Complete
+        run: echo "Deployment successful - Version ${{ needs.build.outputs.version }}"
