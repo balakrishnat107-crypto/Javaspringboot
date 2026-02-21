@@ -53,7 +53,7 @@ jobs:
 
     environment:
       name: UAT
-      url: http://localhost/mysite
+      url: $env:DEPLOY_PATHUAT
 
     steps:
       - name: Download Artifact
@@ -91,7 +91,7 @@ jobs:
     runs-on: self-hosted
     environment:
       name: production
-      url: http://localhost/mysite
+      url: $env:DEPLOY_PATHPROD
 
     steps:
       - name: Download Artifact
