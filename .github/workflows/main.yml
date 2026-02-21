@@ -48,7 +48,7 @@ jobs:
   # 2️⃣ CD STAGE - Manual Approval + Deploy
   # =====================================================
   deployUaT:
-    needs: build
+    needs: build  # 1️⃣ parallale dependeancy 
     runs-on: self-hosted
 
     environment:
@@ -87,7 +87,7 @@ jobs:
   # 2️⃣ CD STAGE - Manual Approval + Deploy
   # =====================================================
   deployProd:
-    needs: [build, deployUaT]
+    needs: [build, deployUaT] # 1️⃣ multiple dependeancy liniear requirement 
     runs-on: self-hosted
     environment:
       name: production
