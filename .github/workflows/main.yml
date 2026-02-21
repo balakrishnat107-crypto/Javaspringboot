@@ -15,7 +15,7 @@ jobs:
   # 1️⃣ CI STAGE - Build + Version + Artifact
   # =====================================================
   build:
-    runs-on: self-hosted
+    runs-on: self-hosted # 1️⃣ windwos agent
 
     outputs:
       version: ${{ steps.version.outputs.version }}
