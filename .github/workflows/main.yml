@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  DEPLOY_PATH: C:\inetpub\wwwroot\mysite
+  DEPLOY_PATH: C:\inetpub\wwwroot\ww
 
 jobs:
 
