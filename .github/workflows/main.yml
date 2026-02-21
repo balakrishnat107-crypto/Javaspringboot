@@ -40,7 +40,7 @@ jobs:
         with:
           name: website-${{ steps.version.outputs.version }}
           path: |
-            - 'Test.html'
+            - 'ecomerce.html'
             !.github/**
           if-no-files-found: error
 
