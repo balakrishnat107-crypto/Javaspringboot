@@ -6,7 +6,8 @@ on:
       - main
 
 env:
-  DEPLOY_PATH: C:\inetpub\wwwroot\ww
+  DEPLOY_PATHPROD: C:\inetpub\wwwroot\Prod
+  DEPLOY_PATHUAT: C:\inetpub\wwwroot\UAT
 
 jobs:
 
@@ -67,7 +68,7 @@ jobs:
       - name: Deploy to IIS (Safe Robocopy)
         shell: powershell
         run: |
-          robocopy deploy $env:DEPLOY_PATH /MIR /XD .github
+          robocopy deploy $env:DEPLOY_PATHUAT /MIR /XD .github
           if ($LASTEXITCODE -lt 8) {
               Write-Host "Robocopy completed successfully."
               exit 0
@@ -105,7 +106,7 @@ jobs:
       - name: Deploy to IIS (Safe Robocopy)
         shell: powershell
         run: |
-          robocopy deploy $env:DEPLOY_PATH /MIR /XD .github
+          robocopy deploy $env:DEPLOY_PATHPROD /MIR /XD .github
           if ($LASTEXITCODE -lt 8) {
               Write-Host "Robocopy completed successfully."
               exit 0
