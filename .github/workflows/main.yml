@@ -39,8 +39,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: website-${{ steps.version.outputs.version }}
-          path: |
-            - 'ecomerce.html'
+          path: src/ecomerce.html
             !.github/**
           if-no-files-found: error
 
