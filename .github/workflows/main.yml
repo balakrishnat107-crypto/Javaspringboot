@@ -87,7 +87,7 @@ jobs:
   # 2️⃣ CD STAGE - Manual Approval + Deploy
   # =====================================================
   deployProd:
-    needs: build
+    needs: [build, deployUaT]
     runs-on: self-hosted
     environment:
       name: production
